@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, User, ShoppingBag, Menu, X, ChevronDown } from "lucide-react"
+import Link from "next/link"
 
 const nav = [
   {
@@ -75,6 +76,12 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <div className="hidden lg:flex items-center gap-1 flex-1" onMouseLeave={() => setOpen(null)}>
+          <Link
+            href="/produtos"
+            className="px-3 py-2 text-xs font-semibold text-white/60 hover:text-white uppercase tracking-wider transition-colors"
+          >
+            Loja
+          </Link>
           {nav.map((item) => (
             <div key={item.label} className="relative" onMouseEnter={() => setOpen(item.label)}>
               <button className="flex items-center gap-1 px-3 py-2 text-xs font-semibold text-white/60 hover:text-white uppercase tracking-wider transition-colors">
@@ -96,7 +103,7 @@ export default function Navbar() {
                         <div key={group}>
                           <div className="text-[10px] font-black text-red-600 uppercase tracking-[0.2em] mb-3">{group}</div>
                           <ul className="flex flex-col gap-1.5">
-                            {links.map((l) => (
+                            {(links as string[]).map((l: string) => (
                               <li key={l}>
                                 <a href="#" className="text-xs text-white/55 hover:text-white transition-colors">
                                   {l}
@@ -144,6 +151,9 @@ export default function Navbar() {
             className="lg:hidden bg-[#0f0f0f] border-t border-white/5 overflow-hidden"
           >
             <div className="px-4 py-4 flex flex-col gap-2">
+              <Link href="/produtos" className="text-white/70 hover:text-white py-2.5 text-sm font-semibold uppercase tracking-wider border-b border-white/5 transition-colors">
+                Loja
+              </Link>
               {nav.map((item) => (
                 <a key={item.label} href="#" className="text-white/70 hover:text-white py-2.5 text-sm font-semibold uppercase tracking-wider border-b border-white/5 transition-colors">
                   {item.label}

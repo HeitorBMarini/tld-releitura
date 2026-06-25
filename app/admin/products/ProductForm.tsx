@@ -48,7 +48,7 @@ export default function ProductForm({ product, categories }: Props) {
   const slugify = (v: string) =>
     v.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
 
-  const set = (k: string, v: string | boolean) => setForm(f => ({ ...f, [k]: v }))
+  const set = (k: string, v: string | boolean | null) => setForm(f => ({ ...f, [k]: v ?? "" }))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

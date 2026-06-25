@@ -3,9 +3,11 @@
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { ShoppingBag } from "lucide-react"
+import Link from "next/link"
 
 type ProductItem = {
   name: string
+  slug?: string | null
   badge: string | null
   price: number
   original_price?: number | null
@@ -38,6 +40,8 @@ export default function BestSellers({ products }: { products: ProductItem[] }) {
               ? Number(p.original_price).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
               : null
 
+            const href = p.slug ? `/produtos/${p.slug}` : "/produtos"
+
             return (
               <motion.div
                 key={i}
@@ -46,6 +50,7 @@ export default function BestSellers({ products }: { products: ProductItem[] }) {
                 transition={{ delay: i * 0.05, duration: 0.4 }}
                 className="group bg-[#080808] hover:bg-[#0f0f0f] transition-colors relative"
               >
+                <Link href={href} className="block">
                 <div className="aspect-square relative overflow-hidden">
                   <img
                     src={p.images[0] ?? "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80"}
@@ -62,9 +67,9 @@ export default function BestSellers({ products }: { products: ProductItem[] }) {
                     </div>
                   )}
                   {!p.is_sold_out && (
-                    <button className="absolute bottom-3 right-3 w-8 h-8 bg-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 hover:text-white">
+                    <div className="absolute bottom-3 right-3 w-8 h-8 bg-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 hover:text-white">
                       <ShoppingBag size={14} className="text-black group-hover:text-white" />
-                    </button>
+                    </div>
                   )}
                 </div>
 
@@ -81,6 +86,7 @@ export default function BestSellers({ products }: { products: ProductItem[] }) {
                     </span>
                   </div>
                 </div>
+                </Link>
               </motion.div>
             )
           })}
