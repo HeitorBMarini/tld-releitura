@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@source "../app";
+
+@theme {
+  --font-family-display: var(--font-display), "Bebas Neue", "Arial Narrow", sans-serif;
+  --font-family-sans: var(--font-sans), "Inter", Arial, sans-serif;
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #080808;
+    color: #f0f0f0;
+    overflow-x: hidden;
+    font-family: var(--font-family-sans, "Inter", sans-serif);
+  }
+  ::selection { background: #dc2626; color: #fff; }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: #080808; }
+  ::-webkit-scrollbar-thumb { background: #dc2626; }
+}
+
+.font-display { font-family: var(--font-family-display); }
