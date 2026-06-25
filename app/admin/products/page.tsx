@@ -1,8 +1,9 @@
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 import { Plus, Pencil } from "lucide-react"
 import DeleteProductButton from "./DeleteProductButton"
 
@@ -21,9 +22,9 @@ export default async function AdminProducts() {
           <h1 className="text-2xl font-bold text-foreground">Produtos</h1>
           <p className="text-muted-foreground text-sm mt-1">{products?.length ?? 0} produto(s) cadastrado(s)</p>
         </div>
-        <Button asChild className="bg-red-600 hover:bg-red-700 text-white">
-          <Link href="/admin/products/new"><Plus size={14} className="mr-1.5" />Novo Produto</Link>
-        </Button>
+        <Link href="/admin/products/new" className={cn(buttonVariants(), "bg-red-600 hover:bg-red-700 text-white gap-1.5")}>
+          <Plus size={14} /> Novo Produto
+        </Link>
       </div>
 
       <Card>
@@ -89,9 +90,9 @@ export default async function AdminProducts() {
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2 justify-end">
-                        <Button asChild size="icon" variant="ghost" className="h-8 w-8">
-                          <Link href={`/admin/products/${p.id}`}><Pencil size={13} /></Link>
-                        </Button>
+                        <Link href={`/admin/products/${p.id}`} className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-8 w-8")}>
+                          <Pencil size={13} />
+                        </Link>
                         <DeleteProductButton id={p.id} name={p.name} />
                       </div>
                     </td>

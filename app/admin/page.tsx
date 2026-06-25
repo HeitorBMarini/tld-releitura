@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { Package, Tag, CreditCard, TrendingUp, Plus, Settings } from "lucide-react"
 import Link from "next/link"
 
@@ -47,16 +48,12 @@ export default async function AdminDashboard() {
           <p className="text-muted-foreground text-sm">Comece cadastrando seus produtos e categorias.</p>
         </CardHeader>
         <CardContent className="px-6 pb-5 flex flex-wrap gap-3">
-          <Button asChild className="bg-red-600 hover:bg-red-700 text-white">
-            <Link href="/admin/products/new">
-              <Plus size={14} className="mr-1.5" /> Novo Produto
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/admin/categories">
-              <Settings size={14} className="mr-1.5" /> Categorias
-            </Link>
-          </Button>
+          <Link href="/admin/products/new" className={cn(buttonVariants(), "bg-red-600 hover:bg-red-700 text-white gap-1.5")}>
+            <Plus size={14} /> Novo Produto
+          </Link>
+          <Link href="/admin/categories" className={cn(buttonVariants({ variant: "outline" }), "gap-1.5")}>
+            <Settings size={14} /> Categorias
+          </Link>
         </CardContent>
       </Card>
     </div>

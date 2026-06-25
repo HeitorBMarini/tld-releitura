@@ -8,7 +8,7 @@ import ImageUploader from "./ImageUploader"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import {
   Select,
@@ -233,9 +233,7 @@ export default function ProductForm({ product, categories }: Props) {
         <Button type="submit" disabled={loading} className="bg-red-600 hover:bg-red-700 text-white">
           {loading ? "Salvando..." : isEdit ? "Salvar alterações" : "Criar produto"}
         </Button>
-        <Button type="button" variant="outline" asChild>
-          <a href="/admin/products">Cancelar</a>
-        </Button>
+        <a href="/admin/products" className={buttonVariants({ variant: "outline" })}>Cancelar</a>
       </div>
     </form>
   )
