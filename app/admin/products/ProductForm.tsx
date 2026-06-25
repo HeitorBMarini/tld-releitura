@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import type { Product, Category } from "@/lib/supabase/types"
+import ImageUploader from "./ImageUploader"
 
 type Props = {
   product?: Product
@@ -24,9 +25,9 @@ export default function ProductForm({ product, categories }: Props) {
     badge: product?.badge ?? "",
     is_sold_out: product?.is_sold_out ?? false,
     is_active: product?.is_active ?? true,
-    images: product?.images?.join("\n") ?? "",
     sort_order: product?.sort_order?.toString() ?? "0",
   })
+  const [images, setImages] = useState<string[]>(product?.images ?? [])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -51,7 +52,7 @@ export default function ProductForm({ product, categories }: Props) {
       badge: (form.badge as Product["badge"]) || null,
       is_sold_out: form.is_sold_out,
       is_active: form.is_active,
-      images: form.images.split("\n").map(s => s.trim()).filter(Boolean),
+      images,
       sort_order: parseInt(form.sort_order) || 0,
     }
 
@@ -129,8 +130,8 @@ export default function ProductForm({ product, categories }: Props) {
 
         {/* Imagens */}
         <div className="sm:col-span-2">
-          <label className={label}>URLs das imagens (uma por linha)</label>
-          <textarea rows={4} value={form.images} onChange={e => set("images", e.target.value)} className={field + " resize-none font-mono text-xs"} placeholder={"https://images.unsplash.com/...\nhttps://images.unsplash.com/..."} />
+          <label className={label}>Imagens do produto</label>
+          <ImageUploader images={images} onChange={setImages} />
         </div>
 
         {/* Sort + flags */}
