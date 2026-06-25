@@ -5,6 +5,20 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import type { Product, Category } from "@/lib/supabase/types"
 import ImageUploader from "./ImageUploader"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Switch } from "@/components/ui/switch"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 
 type Props = {
   product?: Product
@@ -69,98 +83,159 @@ export default function ProductForm({ product, categories }: Props) {
     }
   }
 
-  const field = "w-full bg-white/5 border border-white/10 focus:border-red-600 outline-none px-4 py-3 text-white text-sm placeholder-white/20 transition-colors"
-  const label = "text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2"
-
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {/* Nome */}
-        <div className="sm:col-span-2">
-          <label className={label}>Nome do produto *</label>
-          <input required value={form.name} onChange={e => {
-            set("name", e.target.value)
-            if (!isEdit) set("slug", slugify(e.target.value))
-          }} className={field} placeholder="Ex: SE5 Carbon Helmet" />
-        </div>
+    <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+      {/* Informações básicas */}
+      <Card>
+        <CardContent className="pt-5 space-y-4">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2 space-y-1.5">
+              <Label htmlFor="name">Nome do produto *</Label>
+              <Input
+                id="name"
+                required
+                value={form.name}
+                onChange={e => {
+                  set("name", e.target.value)
+                  if (!isEdit) set("slug", slugify(e.target.value))
+                }}
+                placeholder="Ex: SE5 Carbon Helmet"
+              />
+            </div>
 
-        {/* Slug */}
-        <div className="sm:col-span-2">
-          <label className={label}>Slug (URL)</label>
-          <input value={form.slug} onChange={e => set("slug", e.target.value)} className={field} placeholder="se5-carbon-helmet" />
-        </div>
+            <div className="sm:col-span-2 space-y-1.5">
+              <Label htmlFor="slug">Slug (URL)</Label>
+              <Input
+                id="slug"
+                value={form.slug}
+                onChange={e => set("slug", e.target.value)}
+                placeholder="se5-carbon-helmet"
+                className="font-mono text-xs"
+              />
+            </div>
 
-        {/* Preço */}
-        <div>
-          <label className={label}>Preço (R$) *</label>
-          <input required type="number" step="0.01" min="0" value={form.price} onChange={e => set("price", e.target.value)} className={field} placeholder="4890.00" />
-        </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="price">Preço (R$) *</Label>
+              <Input
+                id="price"
+                required
+                type="number"
+                step="0.01"
+                min="0"
+                value={form.price}
+                onChange={e => set("price", e.target.value)}
+                placeholder="4890.00"
+              />
+            </div>
 
-        {/* Preço original */}
-        <div>
-          <label className={label}>Preço original (R$)</label>
-          <input type="number" step="0.01" min="0" value={form.original_price} onChange={e => set("original_price", e.target.value)} className={field} placeholder="Deixe vazio se não for promoção" />
-        </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="original_price">Preço original (R$)</Label>
+              <Input
+                id="original_price"
+                type="number"
+                step="0.01"
+                min="0"
+                value={form.original_price}
+                onChange={e => set("original_price", e.target.value)}
+                placeholder="Vazio = sem promoção"
+              />
+            </div>
 
-        {/* Categoria */}
-        <div>
-          <label className={label}>Categoria</label>
-          <select value={form.category_id} onChange={e => set("category_id", e.target.value)} className={field + " cursor-pointer"}>
-            <option value="">Sem categoria</option>
-            {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-        </div>
+            <div className="space-y-1.5">
+              <Label>Categoria</Label>
+              <Select value={form.category_id} onValueChange={v => set("category_id", v)}>
+                <SelectTrigger><SelectValue placeholder="Sem categoria" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Sem categoria</SelectItem>
+                  {categories.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
 
-        {/* Badge */}
-        <div>
-          <label className={label}>Badge</label>
-          <select value={form.badge} onChange={e => set("badge", e.target.value)} className={field + " cursor-pointer"}>
-            <option value="">Nenhuma</option>
-            <option value="Novo">Novo</option>
-            <option value="Sale">Sale</option>
-            <option value="Esgotado">Esgotado</option>
-          </select>
-        </div>
+            <div className="space-y-1.5">
+              <Label>Badge</Label>
+              <Select value={form.badge} onValueChange={v => set("badge", v)}>
+                <SelectTrigger><SelectValue placeholder="Nenhuma" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Nenhuma</SelectItem>
+                  <SelectItem value="Novo">Novo</SelectItem>
+                  <SelectItem value="Sale">Sale</SelectItem>
+                  <SelectItem value="Esgotado">Esgotado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-        {/* Descrição */}
-        <div className="sm:col-span-2">
-          <label className={label}>Descrição</label>
-          <textarea rows={3} value={form.description} onChange={e => set("description", e.target.value)} className={field + " resize-none"} placeholder="Descrição do produto..." />
-        </div>
+            <div className="sm:col-span-2 space-y-1.5">
+              <Label htmlFor="description">Descrição</Label>
+              <Textarea
+                id="description"
+                rows={3}
+                value={form.description}
+                onChange={e => set("description", e.target.value)}
+                placeholder="Descrição do produto..."
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Imagens */}
-        <div className="sm:col-span-2">
-          <label className={label}>Imagens do produto</label>
+      {/* Imagens */}
+      <Card>
+        <CardContent className="pt-5 space-y-3">
+          <Label>Imagens do produto</Label>
           <ImageUploader images={images} onChange={setImages} />
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Sort + flags */}
-        <div>
-          <label className={label}>Ordem de exibição</label>
-          <input type="number" min="0" value={form.sort_order} onChange={e => set("sort_order", e.target.value)} className={field} />
-        </div>
+      {/* Config */}
+      <Card>
+        <CardContent className="pt-5 space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="sort_order">Ordem de exibição</Label>
+            <Input
+              id="sort_order"
+              type="number"
+              min="0"
+              value={form.sort_order}
+              onChange={e => set("sort_order", e.target.value)}
+              className="w-32"
+            />
+          </div>
+          <Separator />
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Produto ativo</p>
+                <p className="text-xs text-muted-foreground">Visível no site para os clientes</p>
+              </div>
+              <Switch
+                checked={form.is_active}
+                onCheckedChange={v => set("is_active", v)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Esgotado</p>
+                <p className="text-xs text-muted-foreground">Exibe badge de esgotado, sem botão de compra</p>
+              </div>
+              <Switch
+                checked={form.is_sold_out}
+                onCheckedChange={v => set("is_sold_out", v)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        <div className="flex flex-col gap-3 justify-end">
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" checked={form.is_active} onChange={e => set("is_active", e.target.checked)} className="accent-red-600 w-4 h-4" />
-            <span className="text-white/60 text-xs font-semibold">Produto ativo (visível no site)</span>
-          </label>
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" checked={form.is_sold_out} onChange={e => set("is_sold_out", e.target.checked)} className="accent-red-600 w-4 h-4" />
-            <span className="text-white/60 text-xs font-semibold">Esgotado</span>
-          </label>
-        </div>
-      </div>
+      {error && <p className="text-destructive text-xs">{error}</p>}
 
-      {error && <p className="text-red-500 text-xs mt-4">{error}</p>}
-
-      <div className="flex gap-3 mt-8">
-        <button type="submit" disabled={loading} className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-xs font-black tracking-widest uppercase px-8 py-3.5 transition-colors">
+      <div className="flex gap-3">
+        <Button type="submit" disabled={loading} className="bg-red-600 hover:bg-red-700 text-white">
           {loading ? "Salvando..." : isEdit ? "Salvar alterações" : "Criar produto"}
-        </button>
-        <a href="/admin/products" className="border border-white/10 hover:border-white/30 text-white/50 hover:text-white text-xs font-bold tracking-widest uppercase px-6 py-3.5 transition-colors">
-          Cancelar
-        </a>
+        </Button>
+        <Button type="button" variant="outline" asChild>
+          <a href="/admin/products">Cancelar</a>
+        </Button>
       </div>
     </form>
   )

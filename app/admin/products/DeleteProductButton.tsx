@@ -3,6 +3,7 @@
 import { Trash2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 
 export default function DeleteProductButton({ id, name }: { id: string; name: string }) {
   const router = useRouter()
@@ -15,11 +16,8 @@ export default function DeleteProductButton({ id, name }: { id: string; name: st
   }
 
   return (
-    <button
-      onClick={handleDelete}
-      className="w-8 h-8 border border-white/10 hover:border-red-600 flex items-center justify-center text-white/40 hover:text-red-500 transition-all"
-    >
+    <Button size="icon" variant="ghost" className="h-8 w-8 hover:text-destructive hover:bg-destructive/10" onClick={handleDelete}>
       <Trash2 size={13} />
-    </button>
+    </Button>
   )
 }

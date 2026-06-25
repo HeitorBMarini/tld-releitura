@@ -3,6 +3,9 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
 
 export default function AddCategoryForm() {
   const [name, setName] = useState("")
@@ -28,23 +31,20 @@ export default function AddCategoryForm() {
     else { setName(""); setDescription(""); router.refresh(); setLoading(false) }
   }
 
-  const field = "w-full bg-white/5 border border-white/10 focus:border-red-600 outline-none px-4 py-3 text-white text-sm placeholder-white/20 transition-colors"
-  const lbl = "text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2"
-
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div>
-        <label className={lbl}>Nome *</label>
-        <input required value={name} onChange={e => setName(e.target.value)} className={field} placeholder="Ex: Capacetes" />
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <div className="space-y-1.5">
+        <Label htmlFor="cat-name">Nome *</Label>
+        <Input id="cat-name" required value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Capacetes" />
       </div>
-      <div>
-        <label className={lbl}>Descrição</label>
-        <input value={description} onChange={e => setDescription(e.target.value)} className={field} placeholder="Opcional" />
+      <div className="space-y-1.5">
+        <Label htmlFor="cat-desc">Descrição</Label>
+        <Input id="cat-desc" value={description} onChange={e => setDescription(e.target.value)} placeholder="Opcional" />
       </div>
-      {error && <p className="text-red-500 text-xs">{error}</p>}
-      <button type="submit" disabled={loading} className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-xs font-black tracking-widest uppercase px-5 py-3 transition-colors mt-1">
+      {error && <p className="text-destructive text-xs">{error}</p>}
+      <Button type="submit" disabled={loading} className="bg-red-600 hover:bg-red-700 text-white mt-1 w-full">
         {loading ? "Criando..." : "Criar Categoria"}
-      </button>
+      </Button>
     </form>
   )
 }

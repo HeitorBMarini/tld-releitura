@@ -3,6 +3,7 @@
 import { useRef, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Upload, X, GripVertical, Loader2 } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 type Props = {
   images: string[]
@@ -42,20 +43,14 @@ export default function ImageUploader({ images, onChange }: Props) {
     setUploading(false)
   }
 
-  const remove = (i: number) => {
-    const next = images.filter((_, idx) => idx !== i)
-    onChange(next)
-  }
+  const remove = (i: number) => onChange(images.filter((_, idx) => idx !== i))
 
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault()
     setDragOver(false)
-    if (e.dataTransfer.files.length) {
-      await uploadFiles(e.dataTransfer.files)
-    }
+    if (e.dataTransfer.files.length) await uploadFiles(e.dataTransfer.files)
   }
 
-  // Drag-to-reorder handlers
   const onItemDragStart = (i: number) => setDragIndex(i)
   const onItemDragEnter = (i: number) => setDropIndex(i)
   const onItemDragEnd = () => {
@@ -71,25 +66,24 @@ export default function ImageUploader({ images, onChange }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Drop zone */}
       <div
-        className={`border-2 border-dashed transition-colors rounded-none cursor-pointer flex flex-col items-center justify-center py-8 px-4 text-center ${
-          dragOver ? "border-red-600 bg-red-600/5" : "border-white/10 hover:border-white/25"
-        }`}
+        className={cn(
+          "border-2 border-dashed rounded-lg transition-colors cursor-pointer flex flex-col items-center justify-center py-8 px-4 text-center",
+          dragOver ? "border-red-500 bg-red-500/5" : "border-border hover:border-muted-foreground/50"
+        )}
         onClick={() => inputRef.current?.click()}
         onDragOver={e => { e.preventDefault(); setDragOver(true) }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
       >
-        {uploading ? (
-          <Loader2 size={24} className="text-white/40 animate-spin mb-2" />
-        ) : (
-          <Upload size={24} className="text-white/25 mb-2" />
-        )}
-        <p className="text-white/40 text-xs">
+        {uploading
+          ? <Loader2 size={22} className="text-muted-foreground animate-spin mb-2" />
+          : <Upload size={22} className="text-muted-foreground mb-2" />
+        }
+        <p className="text-sm text-muted-foreground">
           {uploading ? "Enviando..." : "Clique ou arraste imagens aqui"}
         </p>
-        <p className="text-white/20 text-[10px] mt-1">JPG, PNG, WEBP — máx. 5 MB por arquivo</p>
+        <p className="text-xs text-muted-foreground/60 mt-1">JPG, PNG, WEBP — máx. 5 MB</p>
         <input
           ref={inputRef}
           type="file"
@@ -100,58 +94,48 @@ export default function ImageUploader({ images, onChange }: Props) {
         />
       </div>
 
-      {error && <p className="text-red-500 text-xs">{error}</p>}
+      {error && <p className="text-destructive text-xs">{error}</p>}
 
-      {/* Preview grid */}
       {images.length > 0 && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-          {images.map((url, i) => (
-            <div
-              key={url}
-              draggable
-              onDragStart={() => onItemDragStart(i)}
-              onDragEnter={() => onItemDragEnter(i)}
-              onDragEnd={onItemDragEnd}
-              onDragOver={e => e.preventDefault()}
-              className={`relative group aspect-square bg-white/5 border transition-all cursor-grab active:cursor-grabbing ${
-                dropIndex === i && dragIndex !== i
-                  ? "border-red-600 scale-95"
-                  : "border-white/10 hover:border-white/25"
-              } ${i === 0 ? "ring-1 ring-red-600" : ""}`}
-            >
-              <img
-                src={url}
-                alt={`Imagem ${i + 1}`}
-                className="w-full h-full object-cover"
-                draggable={false}
-              />
-              {/* Primary badge */}
-              {i === 0 && (
-                <span className="absolute bottom-1 left-1 text-[8px] font-black uppercase tracking-widest bg-red-600 text-white px-1 py-0.5">
-                  Principal
-                </span>
-              )}
-              {/* Drag handle */}
-              <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <GripVertical size={14} className="text-white drop-shadow" />
-              </div>
-              {/* Remove */}
-              <button
-                type="button"
-                onClick={() => remove(i)}
-                className="absolute top-1 right-1 w-5 h-5 bg-black/70 hover:bg-red-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+        <>
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+            {images.map((url, i) => (
+              <div
+                key={url}
+                draggable
+                onDragStart={() => onItemDragStart(i)}
+                onDragEnter={() => onItemDragEnter(i)}
+                onDragEnd={onItemDragEnd}
+                onDragOver={e => e.preventDefault()}
+                className={cn(
+                  "relative group aspect-square bg-muted rounded-md overflow-hidden border transition-all cursor-grab active:cursor-grabbing",
+                  dropIndex === i && dragIndex !== i ? "border-red-500 scale-95" : "border-border",
+                  i === 0 && "ring-2 ring-red-500 ring-offset-1"
+                )}
               >
-                <X size={10} className="text-white" />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {images.length > 0 && (
-        <p className="text-white/20 text-[10px]">
-          Arraste para reordenar · A primeira imagem é a principal da listagem
-        </p>
+                <img src={url} alt={`Imagem ${i + 1}`} className="w-full h-full object-cover" draggable={false} />
+                {i === 0 && (
+                  <span className="absolute bottom-1 left-1 text-[8px] font-bold uppercase tracking-wider bg-red-600 text-white px-1 py-0.5 rounded-sm">
+                    Principal
+                  </span>
+                )}
+                <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <GripVertical size={13} className="text-white drop-shadow" />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => remove(i)}
+                  className="absolute top-1 right-1 w-5 h-5 bg-black/60 hover:bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                >
+                  <X size={9} className="text-white" />
+                </button>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Arraste para reordenar · A primeira imagem é a principal
+          </p>
+        </>
       )}
     </div>
   )

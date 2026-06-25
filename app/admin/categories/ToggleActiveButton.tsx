@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
+import { Badge } from "@/components/ui/badge"
 
 export default function ToggleActiveButton({ id, isActive }: { id: string; isActive: boolean }) {
   const router = useRouter()
@@ -11,13 +12,16 @@ export default function ToggleActiveButton({ id, isActive }: { id: string; isAct
     router.refresh()
   }
   return (
-    <button
-      onClick={toggle}
-      className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 transition-colors ${
-        isActive ? "bg-green-600/15 text-green-400 hover:bg-red-600/15 hover:text-red-400" : "bg-white/5 text-white/25 hover:bg-green-600/15 hover:text-green-400"
-      }`}
-    >
-      {isActive ? "Ativa" : "Inativa"}
+    <button onClick={toggle} className="cursor-pointer">
+      <Badge
+        variant={isActive ? "default" : "secondary"}
+        className={isActive
+          ? "bg-green-600/15 text-green-600 hover:bg-red-600/15 hover:text-red-600 border-0 transition-colors"
+          : "hover:bg-green-600/15 hover:text-green-600 transition-colors cursor-pointer"
+        }
+      >
+        {isActive ? "Ativa" : "Inativa"}
+      </Badge>
     </button>
   )
 }
